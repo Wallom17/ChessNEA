@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="ChessMoves/ChessMoves.csproj" />
+  <Project Path="ChessMoves/ChessGame.csproj" />
   <Project Path="ChessUI/ChessUI.csproj" />
 </Solution>
