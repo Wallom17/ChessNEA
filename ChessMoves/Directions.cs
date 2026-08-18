@@ -6,6 +6,7 @@ namespace ChessGame
 {
     public class Directions
     {
+        // Predefine every possible direction
         public readonly static Directions Up = new Directions(-1, 0);
         public readonly static Directions Down = new Directions(1, 0);
         public readonly static Directions Left = new Directions(0, -1);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChessGame
+namespace ChessGame.Pieces
 {
     public abstract class Piece
     {
