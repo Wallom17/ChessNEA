@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ChessGame;
+using ChessGame.Pieces;
 
 namespace ChessUI
 {
@@ -16,9 +18,38 @@ namespace ChessUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly Image[,] ImagePieces = new Image[8, 8];
+        private GameState gameState;
         public MainWindow()
         {
             InitializeComponent();
+            InitialiseBoard();
+
+            gameState = new GameState(PlayerColour.White, Board.InitialBoard());
+            DrawBoard(gameState.Board);
+        }
+        private void InitialiseBoard() // creates the board
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Image image = new Image();
+                    ImagePieces [i, j] = image;
+                    GridPiece.Children.Add (image);
+                }
+            }
+        }
+        private void DrawBoard(Board board) // adds images to the board
+        {
+            for (int i = 0;i < 8;i++)
+            {
+                for (int j = 0;j < 8;j++)
+                {
+                    Piece piece = board[i,j];
+                    ImagePieces[i, j].Source = LoadImages.GetImage(piece);
+                }
+            }
         }
     }
 }
