@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ChessGame.enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ChessGame.Pieces
+namespace ChessGame
 {
     public class Knight : Piece
     {

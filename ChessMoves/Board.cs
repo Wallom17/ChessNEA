@@ -1,6 +1,8 @@
-﻿using ChessGame.Pieces;
+﻿using ChessGame.enums;
+using ChessGame.Pieces;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ChessGame
@@ -28,7 +30,7 @@ namespace ChessGame
             return board;
         }
 
-        private void StartingPieces()
+        private void StartingPieces() // adds the starting pieces to the board
         {
             Random r = new Random();
 
@@ -46,49 +48,43 @@ namespace ChessGame
                 if (AllPieces[i] == "King")
                 {
                     this[0, i] = new King(PlayerColour.Black);
-                }
-                else if (AllPieces[i] == "Queen")
-                {
-                    this[0, i] = new Queen(PlayerColour.Black);
-                }
-                else if (AllPieces[i] == "Rook")
-                {
-                    this[0, i] = new Rook(PlayerColour.Black);
-                }
-                else if (AllPieces[i] == "Knight")
-                {
-                    this[0, i] = new Knight(PlayerColour.Black);
-                }
-                else if (AllPieces[i] == "Bishop")
-                {
-                    this[0, i] = new Bishop(PlayerColour.Black);
-                }
-            }
-
-            for (int i = 0; i < 8; i++)
-            {
-                if (AllPieces[i] == "King")
-                {
                     this[7, i] = new King(PlayerColour.White);
                 }
                 else if (AllPieces[i] == "Queen")
                 {
+                    this[0, i] = new Queen(PlayerColour.Black);
                     this[7, i] = new Queen(PlayerColour.White);
                 }
                 else if (AllPieces[i] == "Rook")
                 {
+                    this[0, i] = new Rook(PlayerColour.Black);
                     this[7, i] = new Rook(PlayerColour.White);
                 }
                 else if (AllPieces[i] == "Knight")
                 {
+                    this[0, i] = new Knight(PlayerColour.Black);
                     this[7, i] = new Knight(PlayerColour.White);
                 }
                 else if (AllPieces[i] == "Bishop")
                 {
+                    this[0, i] = new Bishop(PlayerColour.Black);
                     this[7, i] = new Bishop(PlayerColour.White);
                 }
             }
 
+        }
+
+        public static bool IsIn(Position pos) // checks if the position is on the board
+        {
+            if (pos.row >= 0 && pos.column >= 0 && pos.row < 8 && pos.column < 8)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool CheckPiece(Position pos) // checks if there is a piece on that square
+        {
+            return this[pos] != null;
         }
     }
 }

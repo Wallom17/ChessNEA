@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ChessGame;
+using ChessGame.enums;
 using ChessGame.Pieces;
 
 namespace ChessUI
@@ -28,7 +29,7 @@ namespace ChessUI
             gameState = new GameState(PlayerColour.White, Board.InitialBoard());
             DrawBoard(gameState.Board);
         }
-        private void InitialiseBoard() // creates the board
+        private void InitialiseBoard() // creates the board to add the images
         {
             for (int i = 0; i < 8; i++)
             {
