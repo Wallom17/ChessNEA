@@ -86,5 +86,47 @@ namespace ChessGame
         {
             return this[pos] != null;
         }
+
+        public IEnumerable<Position> AllPiecePos() // gets all the positions of pieces
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Position pos = new Position(i, j);
+
+                    if (CheckPiece(pos))
+                    {
+                        yield return pos;
+                    }
+                }
+            }
+        }
+        public IEnumerable<Position> PlayerPieces(PlayerColour player) // gets all the piece locations from a given player
+        {
+            foreach (Position pos in AllPiecePos())
+            {
+                if (this[pos].Colour == player)
+                {
+                    yield return pos;
+                }
+            }
+        }
+
+        public bool Checked(PlayerColour player) // checks if a player is in check
+        {
+            foreach (Position pos in PlayerPieces(player.Opponent()))
+            {
+                Piece piece = this[pos];
+
+                if (piece.Check(pos, this))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

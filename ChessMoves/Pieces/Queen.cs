@@ -9,7 +9,7 @@ namespace ChessGame
     {
         public override PieceTypes Type => PieceTypes.Queen;
         public override PlayerColour Colour { get; }
-        private static readonly Directions[] dirs = new Directions[] { Directions.UpLeft, Directions.UpRight, Directions.DownLeft, Directions.DownRight, Directions.Up, Directions.Down, Directions.Left, Directions.Right };
+        private static readonly Directions[] dirs = new Directions[] { Directions.UpLeft, Directions.UpRight, Directions.DownLeft, Directions.DownRight, Directions.Up, Directions.Down, Directions.Left, Directions.Right }; // all possible directions a queen can move
         public Queen(PlayerColour colour)
         {
             this.Colour = colour;

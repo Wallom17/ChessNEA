@@ -20,7 +20,7 @@ namespace ChessUI
     {
         private readonly Image[,] ImagePieces = new Image[8, 8];
         private readonly Rectangle[,] highlights = new Rectangle[8, 8];
-        private readonly Dictionary<Position, Move> moveStorage = new Dictionary<Position, Move>();
+        private readonly Dictionary<Position, Move> moveStorage = new Dictionary<Position, Move>();  // stores all possible moves
         private Position selectedPosition = null;
         private GameState gameState;
         public MainWindow()
@@ -59,8 +59,10 @@ namespace ChessUI
             }
         }
 
-        private void GridBoard_MouseDown(object sender, MouseButtonEventArgs e)
+        private void GridBoard_MouseDown(object sender, MouseButtonEventArgs e) // checks for mouse input
         {
+            // gets the square the click was made on
+
             Point point = e.GetPosition(GridBoard);
 
             double squareSize = GridBoard.ActualWidth / 8;
@@ -71,15 +73,15 @@ namespace ChessUI
 
             if (selectedPosition == null)
             {
-                StartSelectedPos(pos);
+                StartSelectedPos(pos); // runs if first input
             }
             else
             {
-                EndSelectedPos(pos);
+                EndSelectedPos(pos); // runs if second input (giving the move)
             }
         }
 
-        private void StartSelectedPos(Position pos)
+        private void StartSelectedPos(Position pos) // finds all the legal moves for the piece selected and highlights them
         {
             IEnumerable<Move> moves = gameState.LegalMoves(pos);
 
@@ -91,7 +93,7 @@ namespace ChessUI
             }
         }
 
-        private void EndSelectedPos(Position pos)
+        private void EndSelectedPos(Position pos) // moves the piece selected to the selected square
         {
             selectedPosition = null;
             removeHighlight();
@@ -101,13 +103,13 @@ namespace ChessUI
                ShowMove(move);
             }
         }
-        private void ShowMove(Move move)
+        private void ShowMove(Move move) // does the given move, and redraws the board to show the piece in the new position
         {
             gameState.MakeMove(move);
             DrawBoard(gameState.Board);
         }
 
-        private void StoreMoves(IEnumerable<Move> moves)
+        private void StoreMoves(IEnumerable<Move> moves) // stores every legal move in the storage
         {
             moveStorage.Clear();
             foreach (Move move in moves)
@@ -116,7 +118,7 @@ namespace ChessUI
             }
         }
 
-        private void Showhighlight()
+        private void Showhighlight() // highlights all legal moves
         {
             System.Windows.Media.Color colour = System.Windows.Media.Color.FromRgb(224, 148, 247);
 
@@ -126,7 +128,7 @@ namespace ChessUI
             }
         }
 
-        private void removeHighlight()
+        private void removeHighlight() // removes the highlight from the squares
         {
             foreach (Position end in moveStorage.Keys)
             {

@@ -15,7 +15,7 @@ namespace ChessGame
             this.Colour = colour;
         }
 
-        private static IEnumerable<Position> PossibleMoves(Position start)
+        private static IEnumerable<Position> PossibleMoves(Position start) // finds every possible move a knight can make
         {
             Directions u = Directions.Up;
             Directions d = Directions.Down;
@@ -32,7 +32,7 @@ namespace ChessGame
             yield return Position.NewPosition(start, (l * 2) + d);
         }
 
-        private IEnumerable<Position> Move(Position start, Board board)
+        private IEnumerable<Position> Move(Position start, Board board) // Finds all legal moves a knight can make (within the board, and not capturing a ally piece)
         {
             foreach (Position pos in PossibleMoves(start))
             {

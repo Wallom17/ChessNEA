@@ -15,6 +15,8 @@ namespace ChessGame
         {
             this.Colour = colour;
 
+            // figures out which direction is forward dedpending on the pawn's colour
+
             if (colour == PlayerColour.White)
             {
                 forward = Directions.Up;
@@ -24,11 +26,11 @@ namespace ChessGame
                 forward = Directions.Down;
             }
         }
-        private bool CheckMove(Position pos, Board board)
+        private bool CheckMove(Position pos, Board board) // checks if the move is legal
         {   
             return Board.IsIn(pos) && !(board.CheckPiece(pos));
         }
-        private bool CheckCapture(Position pos, Board board)
+        private bool CheckCapture(Position pos, Board board) // checks if the capture is legal
         {
             if (!(Board.IsIn(pos)) || !(board.CheckPiece(pos)))
             {
@@ -36,7 +38,7 @@ namespace ChessGame
             }
             return board[pos].Colour != Colour;
         }
-        private IEnumerable<Move> PossibleForwardMoves(Position start, Board board)
+        private IEnumerable<Move> PossibleForwardMoves(Position start, Board board) // finds all possible moves a pawn can make
         {
             Position oneSquare = Position.NewPosition(start, forward);
             if (CheckMove(oneSquare, board))
@@ -50,7 +52,7 @@ namespace ChessGame
                 }
             }
         }
-        private IEnumerable<Move> PossibleCaptures(Position start, Board board)
+        private IEnumerable<Move> PossibleCaptures(Position start, Board board) // checks for any captures a pawn can make (diagonal)
         {
             foreach ( Directions dir in new Directions[] { Directions.Left, Directions.Right})
             {
@@ -66,6 +68,21 @@ namespace ChessGame
         public override IEnumerable<Move> GetMove(Position start, Board board)
         {
             return PossibleForwardMoves(start, board).Concat(PossibleCaptures(start, board));
+        }
+
+        public override bool Check(Position start, Board board) // overrides check method to only work on diagonals, as pawns can only capture/give checks on a diagonal
+        {
+            foreach (Move move in PossibleCaptures(start, board))
+            {
+                Piece piece = board[move.EndPos];
+
+                if (piece != null && piece.Type == PieceTypes.King)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

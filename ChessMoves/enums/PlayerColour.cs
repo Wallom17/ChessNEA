@@ -12,7 +12,7 @@ namespace ChessGame.enums
     }
     public static class Player
     {
-        public static PlayerColour Opponent(this PlayerColour player)
+        public static PlayerColour Opponent(this PlayerColour player) // gets the colour of the opponent on the current turn
         {
             switch (player)
             {

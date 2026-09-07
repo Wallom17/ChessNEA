@@ -16,18 +16,27 @@ namespace ChessGame
             Board = board;
         }
 
-        public IEnumerable<Move> LegalMoves(Position pos)
+        public IEnumerable<Move> LegalMoves(Position pos) // checks for all legal moves
         {
             if (!Board.CheckPiece(pos) || Board[pos].Colour != CurrentTurn)
             {
-                return Enumerable.Empty<Move>();
+                yield break;
             }
 
             Piece piece = Board[pos];
-            return piece.GetMove(pos, Board);
+            IEnumerable<Move> allMoves = piece.GetMove(pos, Board); // gives all moves
+
+            foreach (Move move in allMoves) // gives all legal moves
+            {
+                if (move.Legal(Board))
+                {
+                    yield return move;
+                }
+            }
         }
 
-        public void MakeMove(Move move)
+
+        public void MakeMove(Move move) // does the move
         {
             move.DoMove(Board);
             CurrentTurn = CurrentTurn.Opponent();

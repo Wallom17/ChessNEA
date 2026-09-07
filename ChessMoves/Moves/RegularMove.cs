@@ -16,7 +16,7 @@ namespace ChessGame
             EndPos = end;
         }
 
-        public override void DoMove(Board board)
+        public override void DoMove(Board board) // does a regular move
         {
             Piece piece = board[StartPos];
             board[EndPos] = piece;

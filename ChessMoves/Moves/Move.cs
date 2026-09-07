@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessGame.enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,5 +11,21 @@ namespace ChessGame
         public abstract Position EndPos { get; }
 
         public abstract void DoMove(Board board);
+
+        public bool Legal(Board board) // checks if move is legal
+        {
+            Piece temp = board[EndPos];
+
+            board[EndPos] = board[StartPos];
+            board[StartPos] = null;
+
+            bool result = !board.Checked(board[EndPos].Colour);
+
+            board[StartPos] = board[EndPos];
+            board[EndPos] = temp;
+
+            return result;
+        }
+
     }
 }

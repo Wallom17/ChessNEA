@@ -11,7 +11,7 @@ namespace ChessGame
         public override PieceTypes Type => PieceTypes.Bishop;
         public override PlayerColour Colour { get; }
 
-        private static readonly Directions[] dirs = new Directions[] { Directions.UpLeft, Directions.UpRight, Directions.DownLeft, Directions.DownRight};
+        private static readonly Directions[] dirs = new Directions[] { Directions.UpLeft, Directions.UpRight, Directions.DownLeft, Directions.DownRight}; // all directions a bishop can move
 
         public Bishop(PlayerColour colour)
         {
