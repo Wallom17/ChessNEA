@@ -1,5 +1,5 @@
 ﻿using ChessGame.enums;
-using ChessGame.Pieces;
+using ChessGame;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

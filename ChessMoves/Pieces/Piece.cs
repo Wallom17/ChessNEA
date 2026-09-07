@@ -17,7 +17,7 @@ namespace ChessGame
         {
             for (Position pos = Position.NewPosition(start, dir); Board.IsIn(pos); pos = Position.NewPosition(pos, dir))
             {
-                if (Board.CheckPiece(pos))
+                if (board.CheckPiece(pos))
                 {
                     Piece piece = board[pos];
                     if (piece.Colour != Colour)

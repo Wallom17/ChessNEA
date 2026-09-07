@@ -16,5 +16,21 @@ namespace ChessGame
             Board = board;
         }
 
+        public IEnumerable<Move> LegalMoves(Position pos)
+        {
+            if (!Board.CheckPiece(pos) || Board[pos].Colour != CurrentTurn)
+            {
+                return Enumerable.Empty<Move>();
+            }
+
+            Piece piece = Board[pos];
+            return piece.GetMove(pos, Board);
+        }
+
+        public void MakeMove(Move move)
+        {
+            move.DoMove(Board);
+            CurrentTurn = CurrentTurn.Opponent();
+        }
     }
 }

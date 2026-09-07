@@ -15,5 +15,38 @@ namespace ChessGame
             this.Colour = colour;
         }
 
+        private static IEnumerable<Position> PossibleMoves(Position start)
+        {
+            Directions u = Directions.Up;
+            Directions d = Directions.Down;
+            Directions l = Directions.Left;
+            Directions r = Directions.Right;
+
+            yield return Position.NewPosition(start, (u * 2) + r);
+            yield return Position.NewPosition(start, (u * 2) + l);
+            yield return Position.NewPosition(start, (d * 2) + r);
+            yield return Position.NewPosition(start, (d * 2) + l);
+            yield return Position.NewPosition(start, (r * 2) + u);
+            yield return Position.NewPosition(start, (r * 2) + d);
+            yield return Position.NewPosition(start, (l * 2) + u);
+            yield return Position.NewPosition(start, (l * 2) + d);
+        }
+
+        private IEnumerable<Position> Move(Position start, Board board)
+        {
+            foreach (Position pos in PossibleMoves(start))
+            {
+                if (Board.IsIn(pos) && (!board.CheckPiece(pos) || board[pos].Colour != Colour))
+                {
+                    yield return pos;
+                }
+            }
+        }
+
+        public override IEnumerable<Move> GetMove(Position start, Board board)
+        {
+            return Move(start, board)
+                .Select(end => new RegularMove(start, end));
+        }
     }
 }

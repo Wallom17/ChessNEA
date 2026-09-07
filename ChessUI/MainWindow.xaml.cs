@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using ChessGame;
+using ChessGame.enums;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,9 +10,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ChessGame;
-using ChessGame.enums;
-using ChessGame.Pieces;
 
 namespace ChessUI
 {
@@ -20,6 +19,9 @@ namespace ChessUI
     public partial class MainWindow : Window
     {
         private readonly Image[,] ImagePieces = new Image[8, 8];
+        private readonly Rectangle[,] highlights = new Rectangle[8, 8];
+        private readonly Dictionary<Position, Move> moveStorage = new Dictionary<Position, Move>();
+        private Position selectedPosition = null;
         private GameState gameState;
         public MainWindow()
         {
@@ -36,8 +38,12 @@ namespace ChessUI
                 for (int j = 0; j < 8; j++)
                 {
                     Image image = new Image();
-                    ImagePieces [i, j] = image;
-                    GridPiece.Children.Add (image);
+                    ImagePieces[i, j] = image;
+                    GridPiece.Children.Add(image);
+
+                    Rectangle highlight = new Rectangle();
+                    highlights[i, j] = highlight;
+                    GridHighlights.Children.Add(highlight);
                 }
             }
         }
@@ -51,6 +57,81 @@ namespace ChessUI
                     ImagePieces[i, j].Source = LoadImages.GetImage(piece);
                 }
             }
+        }
+
+        private void GridBoard_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(GridBoard);
+
+            double squareSize = GridBoard.ActualWidth / 8;
+            int row = (int)(point.Y / squareSize);
+            int column = (int)(point.X / squareSize);
+
+            Position pos = new Position(row, column);
+
+            if (selectedPosition == null)
+            {
+                StartSelectedPos(pos);
+            }
+            else
+            {
+                EndSelectedPos(pos);
+            }
+        }
+
+        private void StartSelectedPos(Position pos)
+        {
+            IEnumerable<Move> moves = gameState.LegalMoves(pos);
+
+            if (moves.Any())
+            {
+                selectedPosition = pos;
+                StoreMoves(moves);
+                Showhighlight();
+            }
+        }
+
+        private void EndSelectedPos(Position pos)
+        {
+            selectedPosition = null;
+            removeHighlight();
+
+            if (moveStorage.TryGetValue(pos, out Move move))
+            {
+               ShowMove(move);
+            }
+        }
+        private void ShowMove(Move move)
+        {
+            gameState.MakeMove(move);
+            DrawBoard(gameState.Board);
+        }
+
+        private void StoreMoves(IEnumerable<Move> moves)
+        {
+            moveStorage.Clear();
+            foreach (Move move in moves)
+            {
+                moveStorage[move.EndPos] = move;
+            }
+        }
+
+        private void Showhighlight()
+        {
+            System.Windows.Media.Color colour = System.Windows.Media.Color.FromRgb(224, 148, 247);
+
+            foreach (Position end in moveStorage.Keys)
+            {
+                highlights[end.row, end.column].Fill = new System.Windows.Media.SolidColorBrush(colour);
+            }
+        }
+
+        private void removeHighlight()
+        {
+            foreach (Position end in moveStorage.Keys)
+            {
+                highlights[end.row, end.column].Fill = System.Windows.Media.Brushes.Transparent;
+            }   
         }
     }
 }

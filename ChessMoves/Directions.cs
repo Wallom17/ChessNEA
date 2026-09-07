@@ -30,9 +30,9 @@ namespace ChessGame
         {
             return new Directions(a.RowChange + b.RowChange, a.ColumnChange + b.ColumnChange);
         }
-        public static Directions operator *(Directions a, Directions b)
+        public static Directions operator *(Directions a, int num)
         {
-            return new Directions(a.RowChange * b.RowChange, a.ColumnChange * b.ColumnChange);
+            return new Directions(a.RowChange * num, a.ColumnChange * num);
         }
     }
 }

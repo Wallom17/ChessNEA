@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ChessGame.enums;
-using ChessGame.Pieces;
+using ChessGame;
 
 namespace ChessUI
 {
