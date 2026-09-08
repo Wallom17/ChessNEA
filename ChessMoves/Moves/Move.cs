@@ -7,8 +7,8 @@ namespace ChessGame
 {
     public abstract class Move
     {
-        public abstract Position StartPos { get; }
-        public abstract Position EndPos { get; }
+        public abstract Position StartPos { get; } // where the piece starts
+        public abstract Position EndPos { get; } // where the piece is moving to
 
         public abstract void DoMove(Board board);
 
