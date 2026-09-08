@@ -44,7 +44,7 @@ namespace ChessGame
             GameOver();
         }
 
-        public IEnumerable<Move> AllCurrentPlayerMoves(PlayerColour player)
+        public IEnumerable<Move> AllCurrentPlayerMoves(PlayerColour player) // finds every possible move of a given player
         {
             List<Move> possibleMoves = new List<Move>();
 
@@ -64,7 +64,7 @@ namespace ChessGame
             return possibleMoves;
         }
 
-        private void GameOver()
+        private void GameOver() // checks for checkmate or stalemate (other ways of ending game will be added, e.g threefold repetition, 50 moves rule, insufficient material)
         {
             if (!AllCurrentPlayerMoves(CurrentTurn).Any())
             {

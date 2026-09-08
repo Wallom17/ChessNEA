@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChessGame.enums
 {
-    public enum GameEnd
+    public enum GameEnd // every way a chess game can end
     {
         Checkmate,
         Stalemate,

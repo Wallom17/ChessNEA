@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChessGame.enums
 {
-    public enum PieceTypes
+    public enum PieceTypes // every piece type
     {
         Pawn,
         Rook,
