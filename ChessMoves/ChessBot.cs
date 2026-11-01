@@ -57,7 +57,7 @@ namespace ChessGame
         {
             List<Move> moves = GetLegalMoves(state);
 
-            // Checks for checkmate or stalemate.
+            // checks for checkmate or stalemate.
             if (moves.Count == 0)
             {
                 if (state.Board.Checked(state.CurrentTurn))
@@ -85,7 +85,7 @@ namespace ChessGame
                 bestScore = Math.Max(bestScore, score);
                 alpha = Math.Max(alpha, score);
 
-                // Alpha-beta pruning to optimise the algorithm
+                // alpha-beta pruning to optimise the algorithm
                 if (alpha >= beta)
                 {
                     break;
@@ -114,7 +114,7 @@ namespace ChessGame
                 }
             }
 
-            // Returns the score from the current player
+            // returns the score from the current player
             if (state.CurrentTurn == PlayerColour.Black)
             {
                 score = -score;

@@ -151,8 +151,16 @@ namespace ChessUI
         }
         */
 
-        private void ShowMove(Move move) // same as above but temporary with chess bot
+        private async void ShowMove(Move move) // same as above but temporary with chess bot
         {
+
+            if (move is PromotionMove promotion)
+            {
+                promotionMove = promotion;
+                PromotionPanel.Visibility = Visibility.Visible;
+                return;
+            }
+
             gameState.MakeMove(move);
             DrawBoard(gameState.Board);
 
@@ -166,7 +174,9 @@ namespace ChessUI
             // makes bot play blacks turn
             if (gameState.CurrentTurn == PlayerColour.Black)
             {
-                Move botMove = chessBot.FindBestMove(gameState, 3);
+                GameState searchState = new GameState(gameState);
+
+                Move botMove = await Task.Run(() => chessBot.FindBestMove(searchState, 3));
 
                 if (botMove != null)
                 {
