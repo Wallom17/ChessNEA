@@ -117,7 +117,22 @@ namespace ChessUI
             selectedPosition = null;
             removeHighlight();
 
-            if (moveStorage.TryGetValue(pos, out Move move))
+            CastleMove castleMove = null;
+
+            foreach (Move move in moveStorage.Values)
+            {
+                if (move is CastleMove && ((CastleMove)move).RookStart == pos)
+                {
+                    castleMove = (CastleMove)move;
+                    break;
+                }
+            }
+
+            if (castleMove != null)
+            {
+                ShowMove(castleMove);
+            }
+            else if (moveStorage.TryGetValue(pos, out Move move))
             {
                ShowMove(move);
             }
@@ -181,18 +196,33 @@ namespace ChessUI
         {
             System.Windows.Media.Color colour = System.Windows.Media.Color.FromRgb(224, 148, 247);
 
+            // highlights normal moves
             foreach (Position end in moveStorage.Keys)
             {
                 highlights[end.row, end.column].Fill = new System.Windows.Media.SolidColorBrush(colour);
+            }
+
+            // highlights rooks for castling
+            foreach (CastleMove move in moveStorage.Values.OfType<CastleMove>())
+            {
+                highlights[move.RookStart.row, move.RookStart.column].Fill = new System.Windows.Media.SolidColorBrush(colour);
             }
         }
 
         private void removeHighlight() // removes the highlight from the squares
         {
+            // unhighlights normal moves
             foreach (Position end in moveStorage.Keys)
             {
                 highlights[end.row, end.column].Fill = System.Windows.Media.Brushes.Transparent;
-            }   
+            }
+
+            // unhighlights rooks for castling
+            foreach (CastleMove move in moveStorage.Values.OfType<CastleMove>())
+            {
+                highlights[move.RookStart.row, move.RookStart.column].Fill = System.Windows.Media.Brushes.Transparent;
+            }
+
         }
         private void QueenPromotionButton(object sender, RoutedEventArgs e)
         {

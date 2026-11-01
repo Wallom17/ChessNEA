@@ -19,7 +19,7 @@ namespace ChessGame
                 { PieceTypes.King, 20000 }
             };
 
-        public Move FindBestMove(GameState state, int depth = 3)
+        public Move FindBestMove(GameState state, int depth = 3) // change depth to adjust difficulty
         {
             List<Move> moves = GetLegalMoves(state);
 
@@ -80,8 +80,7 @@ namespace ChessGame
                 GameState newState = new GameState(state);
                 newState.MakeMove(move);
 
-                int score = -Negamax(newState, depth - 1, -beta, -alpha, ply + 1
-                );
+                int score = -Negamax(newState, depth - 1, -beta, -alpha, ply + 1);
 
                 bestScore = Math.Max(bestScore, score);
                 alpha = Math.Max(alpha, score);
