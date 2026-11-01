@@ -1,4 +1,5 @@
 ﻿using ChessGame.enums;
+using ChessGame.Moves;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,10 +34,8 @@ namespace ChessGame
         }
         public override IEnumerable<Move> GetMove(Position start, Board board)
         {
-            foreach(Position end in Move(start, board))
-            {
+            foreach (Position end in Move(start, board))
                 yield return new RegularMove(start, end);
-            }
         }
 
         public override bool Check(Position start, Board board)

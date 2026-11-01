@@ -28,7 +28,39 @@
                          RenderOptions.BitmapScalingMode="HighQuality">
                 
             </UniformGrid>
-            
+            <Grid x:Name="PromotionPanel"
+                  Visibility="Collapsed"
+                  Background="#99000000">
+
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="White"
+                            Width="180">
+
+                    <TextBlock Text="Promote your pawn"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="10"/>
+
+                    <Button Content="Queen"
+                            Click="QueenPromotionButton"
+                            Margin="5"/>
+
+                    <Button Content="Rook"
+                            Click="RookPromotionButton"
+                            Margin="5"/>
+
+                    <Button Content="Bishop"
+                            Click="BishopPromotionButton"
+                            Margin="5"/>
+
+                    <Button Content="Knight"
+                            Click="KnightPromotionButton"
+                            Margin="5"/>
+
+                </StackPanel>
+            </Grid>
         </Grid>
     </Viewbox>
 

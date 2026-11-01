@@ -30,9 +30,9 @@ namespace ChessGame
             return board;
         }
 
-        private void StartingPieces() // adds the starting pieces to the board
+        private void StartingPieces() // adds starting pieces to board
         {
-            Random r = new Random();
+            Random random = new Random();
 
             for (int i = 0; i < 8; i++)
             {
@@ -40,38 +40,102 @@ namespace ChessGame
                 this[6, i] = new Pawn(PlayerColour.White);
             }
 
-            string[] AllPieces = {"King", "Queen", "Rook", "Rook", "Knight", "Knight", "Bishop", "Bishop" }; // shuffles the array to create a random back rank
-            r.Shuffle(AllPieces.AsSpan());
+            string[] pieces = new string[8];
 
-            for (int i = 0;i < 8;i++)
+            // Bishops need to be on opposite coloured squares
+            int bishop1 = random.Next(0, 4) * 2;
+            int bishop2 = random.Next(0, 4) * 2 + 1;
+
+            pieces[bishop1] = "Bishop";
+            pieces[bishop2] = "Bishop";
+
+            // adds the queen into a random square
+            List<int> empty = new List<int>();
+
+            for (int i = 0; i < 8; i++)
             {
-                if (AllPieces[i] == "King")
+                if (pieces[i] == null)
                 {
-                    this[0, i] = new King(PlayerColour.Black);
-                    this[7, i] = new King(PlayerColour.White);
-                }
-                else if (AllPieces[i] == "Queen")
-                {
-                    this[0, i] = new Queen(PlayerColour.Black);
-                    this[7, i] = new Queen(PlayerColour.White);
-                }
-                else if (AllPieces[i] == "Rook")
-                {
-                    this[0, i] = new Rook(PlayerColour.Black);
-                    this[7, i] = new Rook(PlayerColour.White);
-                }
-                else if (AllPieces[i] == "Knight")
-                {
-                    this[0, i] = new Knight(PlayerColour.Black);
-                    this[7, i] = new Knight(PlayerColour.White);
-                }
-                else if (AllPieces[i] == "Bishop")
-                {
-                    this[0, i] = new Bishop(PlayerColour.Black);
-                    this[7, i] = new Bishop(PlayerColour.White);
+                    empty.Add(i);
                 }
             }
 
+            int queenPosition = empty[random.Next(empty.Count)];
+            pieces[queenPosition] = "Queen";
+
+            // adds first knight to a random square
+            empty = new List<int>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (pieces[i] == null)
+                {
+                    empty.Add(i);
+                }
+            }
+
+            int knight1 = empty[random.Next(empty.Count)];
+            pieces[knight1] = "Knight";
+
+            // adds second knight to a random square
+            empty = new List<int>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (pieces[i] == null)
+                {
+                    empty.Add(i);
+                }
+            }
+
+            int knight2 = empty[random.Next(empty.Count)];
+            pieces[knight2] = "Knight";
+
+            // adds remaining pieces, rook, king and rook
+            empty = new List<int>();
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (pieces[i] == null)
+                {
+                    empty.Add(i);
+                }
+            }
+
+            pieces[empty[0]] = "Rook";
+            pieces[empty[1]] = "King";
+            pieces[empty[2]] = "Rook";
+
+            for (int i = 0; i < 8; i++)
+            {
+                switch (pieces[i])
+                {
+                    case "King":
+                        this[0, i] = new King(PlayerColour.Black);
+                        this[7, i] = new King(PlayerColour.White);
+                        break;
+
+                    case "Queen":
+                        this[0, i] = new Queen(PlayerColour.Black);
+                        this[7, i] = new Queen(PlayerColour.White);
+                        break;
+
+                    case "Rook":
+                        this[0, i] = new Rook(PlayerColour.Black);
+                        this[7, i] = new Rook(PlayerColour.White);
+                        break;
+
+                    case "Knight":
+                        this[0, i] = new Knight(PlayerColour.Black);
+                        this[7, i] = new Knight(PlayerColour.White);
+                        break;
+
+                    case "Bishop":
+                        this[0, i] = new Bishop(PlayerColour.Black);
+                        this[7, i] = new Bishop(PlayerColour.White);
+                        break;
+                }
+            }
         }
 
         public static bool IsIn(Position pos) // checks if the position is on the board
@@ -126,6 +190,69 @@ namespace ChessGame
             }
 
             return false;
+        }
+
+        public Position FindKing(PlayerColour colour) // finds the position the king is on the board
+        {
+            foreach (Position pos in PlayerPieces(colour))
+            {
+                if (this[pos].Type == PieceTypes.King)
+                    return pos;
+            }
+
+            return null;
+        }
+
+        public IEnumerable<Position> FindRooks(PlayerColour colour) // finds the position of the rooks on the board
+        {
+            foreach (Position pos in PlayerPieces(colour))
+            {
+                if (this[pos].Type == PieceTypes.Rook)
+                    yield return pos;
+            }
+        }
+
+        public Board Copy() // copies the board
+        {
+            Board copy = new Board();
+
+            foreach (Position pos in AllPiecePos())
+            {
+                Piece piece = this[pos];
+                Piece newPiece = null;
+
+                switch (piece.Type)
+                {
+                    case PieceTypes.King:
+                        newPiece = new King(piece.Colour);
+                        break;
+
+                    case PieceTypes.Queen:
+                        newPiece = new Queen(piece.Colour);
+                        break;
+
+                    case PieceTypes.Rook:
+                        newPiece = new Rook(piece.Colour);
+                        break;
+
+                    case PieceTypes.Bishop:
+                        newPiece = new Bishop(piece.Colour);
+                        break;
+
+                    case PieceTypes.Knight:
+                        newPiece = new Knight(piece.Colour);
+                        break;
+
+                    case PieceTypes.Pawn:
+                        newPiece = new Pawn(piece.Colour);
+                        break;
+                }
+
+                newPiece.Moved = piece.Moved;
+                copy[pos] = newPiece;
+            }
+
+            return copy;
         }
 
     }

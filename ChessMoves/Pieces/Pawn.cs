@@ -1,4 +1,5 @@
 ﻿using ChessGame.enums;
+using ChessGame.Moves;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -65,9 +66,57 @@ namespace ChessGame
                 }
             }
         }
+        public IEnumerable<Move> GetEnPassantMoves(Position start, Board board, Position target, Position capturedPawn) // gets possible en passant moves
+        {
+            if (target == null || capturedPawn == null)
+                yield break;
+
+            foreach (Directions dir in new[]{Directions.Left, Directions.Right})
+            {
+                Position end = Position.NewPosition(Position.NewPosition(start, forward), dir);
+
+                if (end == target)
+                {
+                    Piece captured = board[capturedPawn];
+
+                    if (captured is Pawn && captured.Colour != Colour)
+                    {
+                        yield return new EnPassantMove(start, end, capturedPawn);
+                    }
+                }
+            }
+        }
+        private IEnumerable<Move> PromotionMoves(Position start, Board board) 
+        {
+            foreach (Move move in PossibleForwardMoves(start, board).Concat(PossibleCaptures(start, board)))
+            {
+                int finalRow;
+
+                if (Colour == PlayerColour.White)
+                {
+                    finalRow = 0;
+                }
+                else
+                {
+                    finalRow = 7;
+                }
+
+                if (move.EndPos.row == finalRow)
+                {
+                    foreach (PieceTypes type in new[]{PieceTypes.Queen,PieceTypes.Rook,PieceTypes.Bishop,PieceTypes.Knight})
+                    {
+                        yield return new PromotionMove(start, move.EndPos, type);
+                    }
+                }
+                else
+                {
+                    yield return move;
+                }
+            }
+        }
         public override IEnumerable<Move> GetMove(Position start, Board board)
         {
-            return PossibleForwardMoves(start, board).Concat(PossibleCaptures(start, board));
+            return PromotionMoves(start, board);
         }
 
         public override bool Check(Position start, Board board) // overrides check method to only work on diagonals, as pawns can only capture/give checks on a diagonal

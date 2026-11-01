@@ -1,5 +1,6 @@
 ﻿using ChessGame;
 using ChessGame.enums;
+using ChessGame.Moves;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,9 @@ namespace ChessUI
         private readonly Dictionary<Position, Move> moveStorage = new Dictionary<Position, Move>();  // stores all possible moves
         private Position selectedPosition = null;
         private GameState gameState;
+        private ChessBot chessBot = new ChessBot();
+        private Move lastBotMove = null;
+        private PromotionMove promotionMove;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +53,13 @@ namespace ChessUI
         }
         private void DrawBoard(Board board) // adds images to the board
         {
+            for (int row = 0; row < 8; row++) // hides highlights for bot
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    highlights[row, col].Fill = Brushes.Transparent;
+                }
+            }
             for (int i = 0;i < 8;i++)
             {
                 for (int j = 0;j < 8;j++)
@@ -56,6 +67,14 @@ namespace ChessUI
                     Piece piece = board[i,j];
                     ImagePieces[i, j].Source = LoadImages.GetImage(piece);
                 }
+            }
+            if (lastBotMove != null) // highlights the last move played by the bot
+            {
+                highlights[lastBotMove.StartPos.row, lastBotMove.StartPos.column].Fill =
+                    new SolidColorBrush(Color.FromArgb(119, 221, 119, 0));
+
+                highlights[lastBotMove.EndPos.row, lastBotMove.EndPos.column].Fill =
+                    new SolidColorBrush(Color.FromArgb(119, 221, 119, 0));
             }
         }
 
@@ -103,10 +122,50 @@ namespace ChessUI
                ShowMove(move);
             }
         }
-        private void ShowMove(Move move) // does the given move, and redraws the board to show the piece in the new position
+        /* private void ShowMove(Move move) // does the given move, and redraws the board to show the piece in the new position
+        {
+            if (move is PromotionMove promotion)
+            {
+                promotionMove = promotion;
+                PromotionPanel.Visibility = Visibility.Visible;
+                return;
+            }
+
+            gameState.MakeMove(move);
+            DrawBoard(gameState.Board);
+        }
+        */
+
+        private void ShowMove(Move move) // same as above but temporary with chess bot
         {
             gameState.MakeMove(move);
             DrawBoard(gameState.Board);
+
+            // Checks whether game has ended
+            if (gameState.Winner != null)
+            {
+                ShowGameOver();
+                return;
+            }
+
+            // makes bot play blacks turn
+            if (gameState.CurrentTurn == PlayerColour.Black)
+            {
+                Move botMove = chessBot.FindBestMove(gameState, 3);
+
+                if (botMove != null)
+                {
+                    lastBotMove = botMove;
+                    gameState.MakeMove(botMove);
+                    DrawBoard(gameState.Board);
+
+                    if (gameState.Winner != null)
+                    {
+                        ShowGameOver();
+                        return;
+                    }
+                }
+            }
         }
 
         private void StoreMoves(IEnumerable<Move> moves) // stores every legal move in the storage
@@ -135,5 +194,51 @@ namespace ChessUI
                 highlights[end.row, end.column].Fill = System.Windows.Media.Brushes.Transparent;
             }   
         }
+        private void QueenPromotionButton(object sender, RoutedEventArgs e)
+        {
+            CompletePromotion(PieceTypes.Queen);
+        }
+
+        private void RookPromotionButton(object sender, RoutedEventArgs e)
+        {
+            CompletePromotion(PieceTypes.Rook);
+        }
+
+        private void BishopPromotionButton(object sender, RoutedEventArgs e)
+        {
+            CompletePromotion(PieceTypes.Bishop);
+        }
+
+        private void KnightPromotionButton(object sender, RoutedEventArgs e)
+        {
+            CompletePromotion(PieceTypes.Knight);
+        }
+        private void CompletePromotion(PieceTypes pieceType)
+        {
+            if (promotionMove == null)
+            {
+                return;
+            }
+
+            PromotionMove completedMove = new PromotionMove(promotionMove.StartPos, promotionMove.EndPos, pieceType);
+
+            gameState.MakeMove(completedMove);
+            promotionMove = null;
+            PromotionPanel.Visibility = Visibility.Collapsed;
+
+            DrawBoard(gameState.Board);
+        }
+
+        private void ShowGameOver()
+        {
+            if (gameState.Winner != null)
+            {
+                GameOver window = new GameOver(gameState.Winner);
+
+                window.Owner = this;
+                window.ShowDialog();
+            }
+        }
+
     }
 }

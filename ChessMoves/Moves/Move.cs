@@ -12,7 +12,7 @@ namespace ChessGame
 
         public abstract void DoMove(Board board);
 
-        public bool Legal(Board board) // checks if move is legal
+        public virtual bool Legal(Board board) // checks if move is legal
         {
             Piece temp = board[EndPos];
 
