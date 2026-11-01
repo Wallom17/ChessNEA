@@ -174,25 +174,27 @@ namespace ChessUI
             // makes bot play blacks turn
             if (gameState.CurrentTurn == PlayerColour.Black)
             {
-                GameState searchState = new GameState(gameState);
+                await PlayBotMove();
+            }
+        }
+        private async Task PlayBotMove() // plays the chessbots move
+        {
+            GameState searchState = new GameState(gameState);
 
-                Move botMove = await Task.Run(() => chessBot.FindBestMove(searchState, 3));
+            Move botMove = await Task.Run(() => chessBot.FindBestMove(searchState, 1));
 
-                if (botMove != null)
+            if (botMove != null)
+            {
+                lastBotMove = botMove;
+                gameState.MakeMove(botMove);
+                DrawBoard(gameState.Board);
+
+                if (gameState.Winner != null)
                 {
-                    lastBotMove = botMove;
-                    gameState.MakeMove(botMove);
-                    DrawBoard(gameState.Board);
-
-                    if (gameState.Winner != null)
-                    {
-                        ShowGameOver();
-                        return;
-                    }
+                    ShowGameOver();
                 }
             }
         }
-
         private void StoreMoves(IEnumerable<Move> moves) // stores every legal move in the storage
         {
             moveStorage.Clear();
@@ -253,7 +255,7 @@ namespace ChessUI
         {
             CompletePromotion(PieceTypes.Knight);
         }
-        private void CompletePromotion(PieceTypes pieceType)
+        private async void CompletePromotion(PieceTypes pieceType)
         {
             if (promotionMove == null)
             {
@@ -267,7 +269,18 @@ namespace ChessUI
             PromotionPanel.Visibility = Visibility.Collapsed;
 
             DrawBoard(gameState.Board);
+            if (gameState.Winner != null)
+            {
+                ShowGameOver();
+                return;
+            }
+
+            if (gameState.CurrentTurn == PlayerColour.Black)
+            {
+                await PlayBotMove();
+            }
         }
+        
 
         private void ShowGameOver()
         {

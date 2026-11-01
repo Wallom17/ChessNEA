@@ -19,7 +19,7 @@ namespace ChessGame
                 { PieceTypes.King, 20000 }
             };
 
-        public Move FindBestMove(GameState state, int depth = 3) // change depth to adjust difficulty
+        public Move FindBestMove(GameState state, int depth = 3)
         {
             List<Move> moves = GetLegalMoves(state);
 
